@@ -185,7 +185,7 @@ class Game:
 		self.score = 0
 		self.score_text = score_font.render("Score : {0}".format(self.score), False, (255,255,255))
 
-		self.previous_key = pygame.K_LEFT
+		self.previous_key = None
 		self.action_delay = 0
 
 		self.last_fall = 0
@@ -268,44 +268,35 @@ class Game:
 
 	# Main game events
 	def handle_events(self):
+		keys = pygame.key.get_pressed()
 		for e in pygame.event.get():
 			if e.type == pygame.QUIT:
 				pygame.quit()
 				exit(1)
-		keys = pygame.key.get_pressed()
+			if e.type == pygame.KEYDOWN:
 
-		
-		if keys[self.previous_key]:
-			print("b")
-			self.action_delay+=1
-			if self.action_delay == 10:
-				pygame.key.set_repeat(15)
-		else:
-			self.action_delay=0
-			pygame.key.set_repeat(1)
-		# Move part
-		before = copy.deepcopy(self.current_piece)
-		if keys[pygame.K_LEFT]:
-			self.current_piece.move("left")
-			self.previous_key = pygame.K_LEFT
-		if keys[pygame.K_RIGHT]:
-			self.previous_key = pygame.K_RIGHT
-			self.current_piece.move("right")
+				# Move part
+				before = copy.deepcopy(self.current_piece)
+				if e.key == pygame.K_LEFT:
+					self.current_piece.move("left")
+				if e.key == pygame.K_RIGHT:
+					self.current_piece.move("right")
 
-		if self.collide(self.current_piece): # If it collide, return to the previous position
-			self.current_piece = before
+				self.previous_key = e.key
+				if self.collide(self.current_piece): # If it collide, return to the previous position
+					self.current_piece = before
 				
 
-		# Piece logic (fall, rotation)
-		if keys[pygame.K_LSHIFT]:
-			self.fall(forced=True, hard=True)
-		if keys[pygame.K_DOWN]:
-			self.fall(forced=True)
-		if keys[pygame.K_r]:
-			self.current_piece.rotate()
+				# Piece logic (fall, rotation)
+				if e.key == pygame.K_LSHIFT:
+					self.fall(forced=True, hard=True)
+				if e.key == pygame.K_DOWN:
+					self.fall(forced=True)
+				if e.key == pygame.K_r:
+					self.current_piece.rotate()
 
-		if self.collide(self.current_piece):
-			self.spawn_piece()
+				if self.collide(self.current_piece):
+					self.spawn_piece()
 	def run(self):
 		while True:
 			self.window.fill((0,0,0))
@@ -321,5 +312,6 @@ class Game:
 
 			self.render_board()
 			pygame.display.flip()
+pygame.key.set_repeat(1)
 game = Game()
 game.run()
