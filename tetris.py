@@ -7,11 +7,10 @@ from pygame.locals import *
 # in my code, please let me know ^^
 
 # TODO :
-# - Call get_last/first_x/y() functions only once for each rotation (the first or last x will always be the same)
-# - Creating a board to manage collisions
-# - Implement the score functions and levels
+# - Creating a board class to manage collisions
+# - Implement levels
 # - Settings menu
-# - 
+# - Delay for repeating the same action
 
 pygame.init()
 global clock, settings
